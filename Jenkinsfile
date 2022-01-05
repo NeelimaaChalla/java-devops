@@ -26,9 +26,9 @@ pipeline {
             steps {
                 script {
                     echo "building image"
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo' , usernameVariable: 'USER' , passwordVariable: 'PSWD')]){
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo' , usernameVariable: 'USER' , passwordVariable: 'PASS')]){
                         sh 'docker build -t neelimachalla/java-devops:jma-2.0'
-                        sh "echo $PSWD | docker login -u $USER --password-stdin"
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
                         sh 'docker push neelimachalla/java-devops:jma-2.0'
                     }
                     //gv.buildImage()
