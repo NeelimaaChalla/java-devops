@@ -17,8 +17,7 @@ pipeline {
             steps {
                 script {
                     echo "building jar"
-                    sh 'mvn package'
-                    //gv.buildJar()
+                    gv.buildJar()
                 }
             }
         }
@@ -26,12 +25,7 @@ pipeline {
             steps {
                 script {
                     echo "building image"
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-repo' , usernameVariable: 'USER' , passwordVariable= 'PSWD')]){
-                        sh 'docker build -t neelimachalla/java-devops:jma-2.0'
-                        sh "echo $PSWD | docker login -u $USER --password-stdin"
-                        sh 'docker push neelimachalla/java-devops:jma-2.0'
-                    }
-                    //gv.buildImage()
+                    gv.buildImage()
                 }
             }
         }
@@ -39,7 +33,7 @@ pipeline {
             steps {
                 script {
                     echo "deploying"
-                    //gv.deployApp()
+                    gv.deployApp()
                 }
             }
         }
