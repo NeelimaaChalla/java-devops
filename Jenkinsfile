@@ -53,8 +53,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         // git config here for the first time run
-                        sh 'git config --global user.email "jenkins@example.com"'
-                        sh 'git config --global user.name "jenkins"'
+                        /*sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "jenkins"'*/
 
                         sh 'git status'
                         sh 'git branch'
