@@ -5,6 +5,9 @@ pipeline {
     tools{
         maven 'Maven'
     }
+    environment {
+        IMAGE_NAME = "neelimachalla/java-devops:${IMAGE_VERSION}"
+    }
     stages {
         stage('increment version') {
             steps {
@@ -15,7 +18,7 @@ pipeline {
                          versions:commit'
                     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
                     def version = matcher[0][1]
-                    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                    env.IMAGE_VERSION = "$version-$BUILD_NUMBER"
                 }
             }
         }
@@ -32,9 +35,9 @@ pipeline {
                 script {
                     echo "building image and pushing to docker repo..."
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build -t neelimachalla/java-devops:${IMAGE_NAME} ."
+                        sh "docker build -t ${IMAGE_NAME} ."
                         sh 'echo $PASS | docker login -u $USER --password-stdin'
-                        sh "docker push neelimachalla/java-devops:${IMAGE_NAME}"
+                        sh "docker push ${IMAGE_NAME}"
                     }
                     //gv.buildImage()
                 }
@@ -44,6 +47,10 @@ pipeline {
             steps {
                 script {
                     echo "deploying the application..."
+                    def dockercmnd="docker run -p 8080:8080 -d ${IMAGE_NAME}"
+                    sshagent(['ec2-server-key']) {
+                        sh "ssh -o StrictHostKeyChecking=no ec2-user@65.2.148.35 ${dockercmnd}"
+                    }
                     //gv.deployApp()
                 }
             }
