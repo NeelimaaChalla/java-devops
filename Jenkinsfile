@@ -6,7 +6,7 @@ pipeline {
         maven 'Maven'
     }
     environment {
-        IMAGE_NAME = "neelimachalla/java-devops:${IMAGE_VERSION}"
+        IMAGE_NAME = "neelimachalla/java-devops:3.0"
     }
     stages {
         stage('increment version') {
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     echo "deploying the application..."
-                    def dockercmnd="docker run -p 8080:8080 -d ${IMAGE_NAME}"
+                    def dockercmnd = "docker run -p 8080:8080 -d ${IMAGE_NAME}"
                     sshagent(['ec2-server-key']) {
                         sh "ssh -o StrictHostKeyChecking=no ec2-user@65.2.148.35 ${dockercmnd}"
                     }
